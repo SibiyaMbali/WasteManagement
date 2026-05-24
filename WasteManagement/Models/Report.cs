@@ -7,11 +7,14 @@ namespace WasteManagement.Models
             public int ReportId { get; set; }
 
             [Required]
+            [StringLength(100)]
             public string? Title { get; set; }
 
             [Required]
+            [StringLength(500)]
             public string? Description { get; set; }
 
+            [Required]
             public string? Location { get; set; }
 
             public string? ImageUrl { get; set; }
@@ -22,4 +25,5 @@ namespace WasteManagement.Models
         
     }
 }
+
 
