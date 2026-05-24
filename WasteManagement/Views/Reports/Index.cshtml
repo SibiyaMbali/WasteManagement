@@ -1,0 +1,54 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<WasteManagement.Models.Report>
+
+<h1>Reports</h1>
+
+<p>
+    <a asp-action="Create">Create New Report</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Description</td>
+
+                <td>
+                    @if (item.Status == "Pending")
+                    {
+                        <span class="badge bg-warning">Pending</span>
+                    }
+                    else if (item.Status == "In Progress")
+                    {
+                        <span class="badge bg-primary">In Progress</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Cleaned</span>
+                    }
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ReportId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ReportId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ReportId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
