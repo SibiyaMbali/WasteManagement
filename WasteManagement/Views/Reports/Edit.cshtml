@@ -1,9 +1,10 @@
 ﻿@model WasteManagement.Models.Report
 
-<h1>Create Report</h1>
+<h1>Edit Report</h1>
 
+<form asp-action="Edit">
 
-  <form asp-action="Create" enctype="multipart/form-data">
+    <input type="hidden" asp-for="ReportId" />
 
     <div class="mb-3">
         <label class="form-label">Title</label>
@@ -29,13 +30,9 @@
             <option>Cleaned</option>
         </select>
     </div>
-    <div class="mb-3">
-        <label class="form-label">Upload Image</label>
-        <input type="file" name="imageFile" class="form-control" />
-    </div>
 
-    <button type="submit" class="btn btn-success">
-        Submit Report
+    <button type="submit" class="btn btn-primary">
+        Save Changes
     </button>
 
 </form>

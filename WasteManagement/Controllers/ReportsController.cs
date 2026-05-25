@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WasteManagement.Models;
 using WasteManagement.Data;
+using Microsoft.AspNetCore.Http;
 
 public class ReportsController : Controller
 {
@@ -49,78 +50,91 @@ public class ReportsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("ReportId,Title,Description,Location,ImageUrl,Status,DateReported")] Report report)
+    public async Task<IActionResult> Create(Report report, IFormFile imageFile)
     {
         if (ModelState.IsValid)
         {
+            if (imageFile != null)
+            {
+                string uploadsFolder = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/images");
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+                report.ImageUrl = "/images/" + uniqueFileName;
+            }
+
             _context.Add(report);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
         return View(report);
     }
 
     // GET: REPORTS/Edit/5
-    public async Task<IActionResult> Edit(int? reportid)
+    
+    public async Task<IActionResult> Edit(int? id)
     {
-        if (reportid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        var report = await _context.Reports.FindAsync(reportid);
+        var report = await _context.Reports.FindAsync(id);
+
         if (report == null)
         {
             return NotFound();
         }
+
         return View(report);
     }
 
     // POST: REPORTS/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? reportid, [Bind("ReportId,Title,Description,Location,ImageUrl,Status,DateReported")] Report report)
+    public async Task<IActionResult> Edit(int id, Report report)
     {
-        if (reportid != report.ReportId)
+        if (id != report.ReportId)
         {
             return NotFound();
         }
 
         if (ModelState.IsValid)
         {
-            try
-            {
-                _context.Update(report);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReportExists(report.ReportId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.Update(report);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
         return View(report);
     }
 
     // GET: REPORTS/Delete/5
-    public async Task<IActionResult> Delete(int? reportid)
+    public async Task<IActionResult> Delete(int? id)
     {
-        if (reportid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
         var report = await _context.Reports
-            .FirstOrDefaultAsync(m => m.ReportId == reportid);
+            .FirstOrDefaultAsync(m => m.ReportId == id);
+
         if (report == null)
         {
             return NotFound();
@@ -132,15 +146,17 @@ public class ReportsController : Controller
     // POST: REPORTS/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? reportid)
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var report = await _context.Reports.FindAsync(reportid);
+        var report = await _context.Reports.FindAsync(id);
+
         if (report != null)
         {
             _context.Reports.Remove(report);
         }
 
         await _context.SaveChangesAsync();
+
         return RedirectToAction(nameof(Index));
     }
 
