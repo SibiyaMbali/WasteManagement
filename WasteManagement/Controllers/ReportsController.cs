@@ -14,10 +14,11 @@ public class ReportsController : Controller
     }
 
     // GET: REPORTS
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index()
     {
         return View(await _context.Reports.ToListAsync());
     }
+
 
     // GET: REPORTS/Details/5
     public async Task<IActionResult> Details(int? reportid)
