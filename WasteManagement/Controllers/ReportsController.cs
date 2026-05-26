@@ -4,7 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using WasteManagement.Models;
 using WasteManagement.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
+
+[Authorize]
 public class ReportsController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -71,7 +75,7 @@ public class ReportsController : Controller
 
                 report.ImageUrl = "/images/" + uniqueFileName;
             }
-
+            report.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             _context.Add(report);
             await _context.SaveChangesAsync();
 
