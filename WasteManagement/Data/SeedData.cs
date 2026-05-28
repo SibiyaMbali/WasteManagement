@@ -9,6 +9,9 @@ namespace WasteManagement.Data
             var roleManager =
                 serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+            var userManager =
+                serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
             string[] roles = { "Admin", "User" };
 
             foreach (var role in roles)
@@ -16,6 +19,18 @@ namespace WasteManagement.Data
                 if (!await roleManager.RoleExistsAsync(role))
                 {
                     await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            string adminEmail = "mesibiya13@gmail.com";
+
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+            if (adminUser != null)
+            {
+                if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+                {
+                    await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
             }
         }

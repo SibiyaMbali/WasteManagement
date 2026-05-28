@@ -58,25 +58,33 @@ public class ReportsController : Controller
     {
         if (ModelState.IsValid)
         {
-            if (imageFile != null)
+            if (imageFile == null)
             {
-                string uploadsFolder = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot/images");
+                ModelState.AddModelError("", "Please upload an image.");
 
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
-
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(fileStream);
-                }
-
-                report.ImageUrl = "/images/" + uniqueFileName;
+                return View(report);
             }
+
+            string uploadsFolder = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/images");
+
+            string uniqueFileName =
+                Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            report.ImageUrl = "/images/" + uniqueFileName;
+
             report.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             _context.Add(report);
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
@@ -85,48 +93,7 @@ public class ReportsController : Controller
         return View(report);
     }
 
-    // GET: REPORTS/Edit/5
     
-    public async Task<IActionResult> Edit(int? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var report = await _context.Reports.FindAsync(id);
-
-        if (report == null)
-        {
-            return NotFound();
-        }
-
-        return View(report);
-    }
-
-    // POST: REPORTS/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Report report)
-    {
-        if (id != report.ReportId)
-        {
-            return NotFound();
-        }
-
-        if (ModelState.IsValid)
-        {
-            _context.Update(report);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        return View(report);
-    }
 
     // GET: REPORTS/Delete/5
     public async Task<IActionResult> Delete(int? id)
@@ -158,6 +125,44 @@ public class ReportsController : Controller
         {
             _context.Reports.Remove(report);
         }
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Index));
+    }
+    // UPDATE ADMIN STATUS
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdateStatus(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var report = await _context.Reports.FindAsync(id);
+
+        if (report == null)
+        {
+            return NotFound();
+        }
+
+        return View(report);
+    }
+
+    // POST: REPORTS/UpdateStatus/5
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateStatus(int id, Report report)
+    {
+        var existingReport = await _context.Reports.FindAsync(id);
+
+        if (existingReport == null)
+        {
+            return NotFound();
+        }
+
+        existingReport.Status = report.Status;
 
         await _context.SaveChangesAsync();
 

@@ -1,0 +1,50 @@
+﻿@model WasteManagement.Models.Report
+
+<h1>Update Report Status</h1>
+
+<div class="card p-4 shadow">
+
+    <h4>@Model.Title</h4>
+
+    <p>@Model.Description</p>
+
+    <p>
+        <strong>Location:</strong>
+        @Model.Location
+    </p>
+
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl"
+             width="300"
+             class="mb-3" />
+    }
+
+    <form asp-action="UpdateStatus">
+
+        <input type="hidden" asp-for="ReportId" />
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Change Status
+            </label>
+
+            <select asp-for="Status" class="form-control">
+
+                <option>Pending</option>
+                <option>In Progress</option>
+                <option>Cleaned</option>
+
+            </select>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-success">
+            Update Status
+        </button>
+
+    </form>
+
+</div>
