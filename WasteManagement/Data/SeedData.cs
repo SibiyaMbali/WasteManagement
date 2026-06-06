@@ -22,7 +22,7 @@ namespace WasteManagement.Data
                 }
             }
 
-            string adminEmail = "mesibiya13@gmail.com";
+            string adminEmail = "admin@wastemanagement.com";
 
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 

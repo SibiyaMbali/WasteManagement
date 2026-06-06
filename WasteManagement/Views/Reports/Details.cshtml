@@ -1,0 +1,42 @@
+﻿@model WasteManagement.Models.Report
+
+<h1>Report Details</h1>
+
+<div class="card p-4">
+
+    <h3>@Model.Title</h3>
+
+    <p>
+        <strong>Description:</strong><br />
+        @Model.Description
+    </p>
+
+    <p>
+        <strong>Location:</strong>
+        @Model.Location
+    </p>
+
+    <p>
+        <strong>Status:</strong>
+        @Model.Status
+    </p>
+
+    <p>
+        <strong>Date Reported:</strong>
+        @Model.DateReported
+    </p>
+
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl"
+             width="400"
+             class="img-fluid rounded" />
+    }
+
+    <br /><br />
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Back to Reports
+    </a>
+
+</div>

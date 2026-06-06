@@ -26,15 +26,16 @@ public class ReportsController : Controller
 
 
     // GET: REPORTS/Details/5
-    public async Task<IActionResult> Details(int? reportid)
+    public async Task<IActionResult> Details(int? id)
     {
-        if (reportid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
         var report = await _context.Reports
-            .FirstOrDefaultAsync(m => m.ReportId == reportid);
+            .FirstOrDefaultAsync(r => r.ReportId == id);
+
         if (report == null)
         {
             return NotFound();
@@ -93,7 +94,7 @@ public class ReportsController : Controller
         return View(report);
     }
 
-    
+
 
     // GET: REPORTS/Delete/5
     public async Task<IActionResult> Delete(int? id)
