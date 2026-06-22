@@ -6,6 +6,7 @@ namespace WasteManagement.Models
             public int WorkerId { get; set; }
 
         [Required]
+
         public string? Name { get; set; }
 
          [Required]
