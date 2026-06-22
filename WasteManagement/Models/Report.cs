@@ -24,7 +24,11 @@ namespace WasteManagement.Models
             public string Status { get; set; } = "Pending";
 
             public DateTime DateReported { get; set; } = DateTime.Now;
-        
+
+            public int? WorkerId { get; set; }
+
+            public Worker? Worker { get; set; }
+
     }
 }
 
