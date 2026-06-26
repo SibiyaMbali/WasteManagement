@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using WasteManagement.ViewModels;
 
 namespace WasteManagement.Controllers
 {
@@ -14,27 +15,27 @@ namespace WasteManagement.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+
+
+        public async Task<IActionResult> Index()
         {
             var users = _userManager.Users.ToList();
-            return View(users);
-        }
 
-        public async Task<IActionResult> MakeWorker(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
+            var model = new List<UserRoleViewModel>();
 
-            if (user == null)
+            foreach (var user in users)
             {
-                return NotFound();
+                var roles = await _userManager.GetRolesAsync(user);
+
+                model.Add(new UserRoleViewModel
+                {
+                    UserId = user.Id,
+                    Email = user.Email!,
+                    Role = roles.FirstOrDefault() ?? "User"
+                });
             }
 
-            if (!await _userManager.IsInRoleAsync(user, "Worker"))
-            {
-                await _userManager.AddToRoleAsync(user, "Worker");
-            }
-
-            return RedirectToAction(nameof(Index));
+            return View(model);
         }
     }
 }
