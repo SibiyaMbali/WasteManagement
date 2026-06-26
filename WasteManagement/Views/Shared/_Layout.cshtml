@@ -44,6 +44,19 @@
                         Workers
                     </a>
                 </li>
+
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Users"
+                               asp-action="Index">
+                                User Management
+                            </a>
+                        </li>
+                    }
+               
             }
         </nav>
     </header>

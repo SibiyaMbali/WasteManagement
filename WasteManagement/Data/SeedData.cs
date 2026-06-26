@@ -12,7 +12,7 @@ namespace WasteManagement.Data
             var userManager =
                 serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            string[] roles = { "Admin", "User" };
+            string[] roles = { "Admin", "User", "Worker" };
 
             foreach (var role in roles)
             {

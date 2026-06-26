@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+
+<h2>User Management</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Current Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var user in Model)
+        {
+            <tr>
+
+                <td>@user.Email</td>
+
+                <td>Loading...</td>
+
+                <td>
+
+                    <a asp-action="MakeWorker"
+                       asp-route-id="@user.Id"
+                       class="btn btn-success">
+
+                        Make Worker
+
+                    </a>
+
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+
+</table>
